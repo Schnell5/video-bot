@@ -1,0 +1,32 @@
+# File /etc/motion/motion.conf
+
+[main]
+admin_id = **
+token = **
+password = **
+motion_dir = /var/lib/motion/
+live_resolution = 640x480
+home_dir = /home/pi
+allow_add_user = False
+start_time = False
+stop_time = False
+
+[backup]
+token = **
+password = **
+bot_name = **
+
+[router]
+router_ip = **
+router_user = **
+router_pass = **
+make_reboot = False
+
+[current]
+state = False
+
+[wifi]
+wifi = False
+ssid_1 = **
+pass_1 = **
+
