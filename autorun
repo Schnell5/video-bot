@@ -1,0 +1,18 @@
+# Create file  /etc/systemd/system/bot_camera.service
+#Make commands:
+#  sudo chmod 644 /lib/systemd/system/bot_camera.service
+#  sudo systemctl daemon-reload
+#  sudo systemctl enable bot_camera.service
+
+[Unit]
+Description=MotionBot
+After=multi-user.target
+ 
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /home/pi/script.py
+Restart=always
+ 
+[Install]
+WantedBy=multi-user.target
+
