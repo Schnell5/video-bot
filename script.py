@@ -305,10 +305,7 @@ def update(message):
 		bot.send_message(message.chat.id,  "Software downloaded.")
 		
 		#sednd info about changes
-		info = ""
-		for line in infoF:
-			info = info + line
-		bot.send_message(message.chat.id,  info)
+		bot.send_message(message.chat.id,  infoF)
 				
 		#update motion config file
 		os.system("rm %s"%motion_conf_file )
