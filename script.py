@@ -307,7 +307,7 @@ def update(message):
 		#sednd info about changes
 		info = ""
 		for line in infoF:
-			info = info + line + "/n"
+			info = info + line
 		bot.send_message(message.chat.id,  info)
 				
 		#update motion config file
