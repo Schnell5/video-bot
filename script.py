@@ -382,6 +382,7 @@ def state_bot(message):
 			string = string + string_camera
 				
 				
+				
 
 		#Checking sender
 		state_motion = state_sender 
