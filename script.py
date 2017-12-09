@@ -375,9 +375,9 @@ def state_bot(message):
 		camera = os.listdir("/dev/")
 		for line in camera:
 			if "video" in line:
-				string_camera = string_camera  + "Camera: " + line
+				string_camera = string_camera  + "\nCamera " + line + ": OK"
 		if string_camera =="":
-			string = string + "\n Camera NOT found"
+			string = string + "\n Camera: FAIL"
 		else: 
 			string = string + string_camera
 				
@@ -389,7 +389,7 @@ def state_bot(message):
 		if state_motion != state_sender:
 			string = string + "\nState of motion detection: OK"
 		else:
-			string = string + "\nState of motion detection: Error"
+			string = string + "\nState of motion detection: FAIL"
 
 		string = string + "\n\nCurrent time: " + str( datetime.now().replace(microsecond=0) )
 		string = string + "\nStart time: " + str( start_time)
