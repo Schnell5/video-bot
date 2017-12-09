@@ -32,7 +32,6 @@ from datetime import datetime, date
 import ConfigParser
 conf_file = '/etc/tele_motion.conf'
 motion_conf_file = "/etc/motion/motion.conf"
-version = 1.11
 
 def log( string, admin_note = False ):
     try:
@@ -302,7 +301,8 @@ def update(message):
 		scriptF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/script.py").read()
 		motionF  = urllib.urlopen("https://github.com/denchz/video-bot/blob/master/motion.conf").read()
 		infoF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/info_version").read()
-		bot.send_message(message.chat.id,  "Software downloaded.")
+		bot.send_message(message.chat.id,  "Current version: 1.12")
+		bot.send_message(message.chat.id,  "Software downloaded")
 		
 		#sednd info about changes
 		bot.send_message(message.chat.id,  infoF)
