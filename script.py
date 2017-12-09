@@ -365,9 +365,9 @@ def state_bot(message):
 		bot.send_message(message.chat.id,  "Checking..." )
 		string = "Clients: " + str(clients)
 		if state:
-			string = string + "\nState of motion detection: ON"
+			string = string + "\nDetection status: ON"
 		else: 
-			string = string + "\nState of motion detection: OFF"
+			string = string + "\nDetection status: OFF"
 		
 		string = string + "\nCount of commands: " + str(count_command)
 		
