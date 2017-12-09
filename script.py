@@ -33,7 +33,7 @@ from datetime import datetime, date
 import ConfigParser
 conf_file = '/etc/tele_motion.conf'
 motion_conf_file = "/etc/motion/motion.conf"
-version = "#Version: 1.11#"
+version = 1.11
 
 def log( string, admin_note = False ):
     try:
@@ -295,42 +295,44 @@ def log_bot(message):
 def update(message):
 	if not check_request(message.chat.id, "Asking for updating" ): return False
 	try:
+		#stop processes
 		os.system("killall motion")
+	
+		#download files
 		bot.send_message(message.chat.id,  "Processes stopped")
-		download  = urllib.urlopen("http://video-bot.ru/download/privateupdatemoqyjdsqffgfggrrffgfgg/?wpdmdl=321").read()
-		download_motion  = urllib.urlopen("http://video-bot.ru/download/motion_config/?wpdmdl=399").read()
+		scriptF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/script.py").read()
+		motionF  = urllib.urlopen("https://github.com/denchz/video-bot/blob/master/motion.conf").read()
+		infoF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/info_version").read()
 		bot.send_message(message.chat.id,  "Software downloaded")
 		
-
-		if ("daemon on" in download_motion):
-			os.system("rm %s"%motion_conf_file )
-			f = open("%s" % motion_conf_file, "w")
-			f.write(download_motion)
-			f.close()
-			bot.send_message(message.chat.id,  "Config file updated")
-		else:
-			bot.send_message(message.chat.id,  "Error in updating conf motion file")
-
-
-		if ("#update_main_begin" in download) and ("#update_main_end" in download):
-			download_2 = download.split("\n")
-			info = ""
-			for line in download_2:
-				if ("#--" in line) and ("line" not in line):
-					info = info + line.replace("#--","") + "\n"
-			bot.send_message(message.chat.id,  info)
-			os.system("rm %s"%script_path )
-			f = open("%s" % script_path, "w")
-			f.write(download)
-			f.close()
-			bot.send_message(message.chat.id,  "Software updated. Restarting bot")
-			os.system("killall motion")
-			os.system("killall python")
-		else:
-			bot.send_message(message.chat.id,  "Error in updating software")
+		#sednd info about changes
+		info = ""
+		for line in infoF:
+			info = info + line + "/n"
+		bot.send_message(message.chat.id,  info)
+				
+		#update motion config file
+		os.system("rm %s"%motion_conf_file )
+		f = open("%s" % motion_conf_file, "w")
+		f.write(motionF)
+		f.close()
+		
+		#update script file
+		os.system("rm %s"%script_path )
+		f = open("%s" % script_path, "w")
+		f.write(scriptF)
+		f.close()
+		
+		#restarting processes
+		bot.send_message(message.chat.id,  "Software updated. Restarting bot")
+		os.system("killall motion")
+		os.system("killall python")
 	except Exception, e:
 		log(e)
 
+		
+		
+		
 @bot.message_handler(commands=['clearlog'])
 def log_clear(message):
 	if not check_request(message.chat.id, "Asking for clearing log" ): return False
