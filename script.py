@@ -370,12 +370,18 @@ def state_bot(message):
 			string = string + "\nState of motion detection: OFF"
 		
 		string = string + "\nCount of commands: " + str(count_command)
-
-		#Checking for update
-		if (version not in urllib.urlopen("http://video-bot.ru/download/privateupdatemoqyjdsqffgfggrrffgfgg/?wpdmdl=321").read() ):
-			string = string + "\n\nNew version is available. Type /update dor updating\n"
-		else:
-			string = string + "\n\nNew version is installed\n"
+		
+		string_camera = ""
+		camera = os.listdir("/dev/")
+		for line in camera:
+			if "video" in line:
+				string_camera = string_camera  + "Camera: " + line
+		if string_camera =="":
+			string = string + "\n Camera NOT found"
+		else: 
+			string = string + string_camera
+				
+				
 
 		#Checking sender
 		state_motion = state_sender 
