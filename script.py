@@ -299,7 +299,7 @@ def update(message):
 		#download files
 		bot.send_message(message.chat.id,  "Processes stopped")
 		scriptF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/script.py").read()
-		motionF  = urllib.urlopen("https://github.com/denchz/video-bot/blob/master/motion.conf").read()
+		motionF  = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/motion.conf").read()
 		infoF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/info_version").read()
 		bot.send_message(message.chat.id,  "Current version: 1.12")
 		bot.send_message(message.chat.id,  "Software downloaded")
