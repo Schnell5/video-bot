@@ -302,7 +302,7 @@ def update(message):
 		scriptF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/script.py").read()
 		motionF  = urllib.urlopen("https://github.com/denchz/video-bot/blob/master/motion.conf").read()
 		infoF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/info_version").read()
-		bot.send_message(message.chat.id,  "Software downloaded")
+		bot.send_message(message.chat.id,  "Software downloaded.")
 		
 		#sednd info about changes
 		info = ""
