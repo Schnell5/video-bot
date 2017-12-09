@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*- 
-#update_main_begin
 #!/usr/bin/python
 #apt-get install python2.7
 #apt-get install python-pip
@@ -641,24 +640,3 @@ if state:
 		bot.send_message(admin_id, "Camera started " )
 	except Exception,e :
 		log(e)
-
-
-
-
-
-
-
-
-
-
-
-#--New in version 1.12:
-#---Ability of making photo from the second camera was added
-#--
-#--Next version:
-#---Updating motion config file
-#---Initial config making
-#---Local storage for motion foto
-#---Changing password from tlgrm
-
-#update_main_end
