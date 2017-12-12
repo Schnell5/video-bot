@@ -185,16 +185,16 @@ def reboot():
 			log("Rebooting is not need. Internet is OK")
 			return True
 		#Reconnect WIFI if it is present
-		if wifi:
-			log("Problem. Trying connect to wifi with login: %s password: %s "%(ssid_wifi,password_wifi) )
+		if se['wifi']:
+			log("Problem. Trying connect to wifi with login: %s password: %s "%(se['ssid_wifi'],se['password_wifi']) )
 			os.system("nmcli dev disconnect iface wlan0")
-			os.system( "nmcli device wifi connect %s password %s"%(ssid_wifi,password_wifi) )
+			os.system( "nmcli device wifi connect %s password %s"%(se['ssid_wifi'],se['password_wifi']) )
 			time.sleep(10)
 			if os.system("ping -c 1 yandex.ru")==0 or os.system("ping -c 1 google.ru")==0 or os.system("ping -c 1 8.8.8.8")==0:
-				log("Wifi is OK with login: %s password: %s "%(ssid_wifi,password_wifi ))
+				log("Wifi is OK with login: %s password: %s "%(se['ssid_wifi'],se['password_wifi'] ))
 				return True
 		#Reboot router
-		if make_reboot:
+		if se['make_reboot']:
 			log("Problem with internet. Rebooting router")
 			tn = telnetlib.Telnet(se['router_ip'])
 			tn.read_until("ogin:")
