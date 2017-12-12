@@ -516,26 +516,26 @@ def audio_bot(message):
 		log(e)
 
 @bot.message_handler(commands=['camera_off'])
-def stop_bot(message):
+def stop_bot(message=False):
 	if not check_request(message.chat.id, "Asking for stop motion " ): return False
 	try:
 		global state
 		os.system("killall motion")
-		bot.send_message(message.chat.id, "Camera stopped" )
+		if message: bot.send_message(message.chat.id, "Camera stopped" )
 		state = False
 		update_settings('current', 'state', state)
 	except Exception, e:
 		log(e)
 
 @bot.message_handler(commands=['camera_on'])
-def start_bot(message):
+def start_bot(message=False):
 	if not check_request(message.chat.id, "Asking for start motion" ):  return False
 	
 	try:
 		global state
 		os.system("rm /var/lib/motion/*")
 		os.system("motion")
-		bot.send_message(message.chat.id, "Camera started" )
+		if message: bot.send_message(message.chat.id, "Camera started" )
 		state = True
 		update_settings('current', 'state', state)
 	except Exception, e:
@@ -606,20 +606,12 @@ def time_stop_start():
 	while True:
 		try:
 			time.sleep(30)
-
 			if str(start_time) == str( datetime.now().strftime("%H.%M") )  and state == False:
-				global state
-				os.system("rm /var/lib/motion/*")
-				os.system("motion")
+				start_bot()
 				log("Motion started by timer" , admin_note = True  )
-				state = True
-				update_settings('current', 'state', state)
-			if str(stop_time ) == str( datetime.now().strftime("%H.%M") ) and state == True :
-				global state
-				os.system("killall motion")
+			if str(stop_time) == str( datetime.now().strftime("%H.%M") ) and state == True :
+				stop_bot()
 				log("Motion stoped by timer" , admin_note = True  )
-				state = False
-				update_settings('current', 'state', state)
 		except Exception,e :
 			log(e)
 
