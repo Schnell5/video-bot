@@ -286,18 +286,15 @@ def update(message):
 	try:
 		#stop processes
 		os.system("killall motion")
-	
 		#download files
-		bot.send_message(message.chat.id,  "Processes stopped")
 		scriptF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/script.py").read()
 		motionF  = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/motion.conf").read()
 		infoF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/info_version").read()
 		bot.send_message(message.chat.id,  "Current version: 1.12")
-		bot.send_message(message.chat.id,  "Software downloaded")
 		
 		#sednd info about changes
 		bot.send_message(message.chat.id,  infoF)
-				
+		
 		#update motion config file
 		os.system("rm %s"%motion_conf_file )
 		f = open("%s" % motion_conf_file, "w")
@@ -311,7 +308,7 @@ def update(message):
 		f.close()
 		
 		#restarting processes
-		bot.send_message(message.chat.id,  "Software updated. Restarting bot")
+		bot.send_message(message.chat.id,  "Software updated. Restarting bot...")
 		os.system("killall motion")
 		os.system("killall python")
 	except Exception, e:
