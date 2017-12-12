@@ -69,11 +69,11 @@ def settings_new():
 		se['password_wifi'] = config.get('wifi','pass_1')
 
 		se['state'] = config.getboolean('current','state')
-		se['log_path'] =  home_dir + "/log.txt"
-		se['live_path'] = home_dir + "/live.jpg"
-		se['audio_path'] = home_dir + "/output.wav"
-		se['script_path'] = home_dir + "/script.py"
-		se['config_path'] = home_dir + "/main.conf"
+		se['log_path'] =  se['home_dir'] + "/log.txt"
+		se['live_path'] = se['home_dir'] + "/live.jpg"
+		se['audio_path'] = se['home_dir'] + "/output.wav"
+		se['script_path'] = se['home_dir'] + "/script.py"
+		se['config_path'] = se['home_dir'] + "/main.conf"
 		se['allow_add_user'] = config.getboolean('main','allow_add_user')
 
 		try:
@@ -85,8 +85,8 @@ def settings_new():
 			se['stop_time'] = config.get('main','stop_time')
 		except Exception, e:
 			se['stop_time'] = False
-		return str(settings)
-
+			
+		log("Settings was read")
 	except Exception, e:
 		log(e)
 
@@ -167,7 +167,7 @@ def check_request(chat_id, request ):
 	global count_command
 	count_command = count_command + 1
 	admin_note = True 
-	if str(chat_id) == str(admin_id) :
+	if str(chat_id) == str(se['admin_id']) :
 		admin_note = False
 	if chat_id in clients:
 		log("Request: %s  from: %s" % ( request, chat_id), admin_note)
@@ -196,11 +196,11 @@ def reboot():
 		#Reboot router
 		if make_reboot:
 			log("Problem with internet. Rebooting router")
-			tn = telnetlib.Telnet(router_ip)
+			tn = telnetlib.Telnet(se['router_ip'])
 			tn.read_until("ogin:")
-			tn.write(router_user + "\n")
+			tn.write(se['router_user'] + "\n")
 			tn.read_until("assword:")
-			tn.write(router_pass + "\n")
+			tn.write(se['router_pass'] + "\n")
 			tn.read_until("$")
 			tn.write("reboot \n")
 			tn.read_until("$")
@@ -223,10 +223,10 @@ def reboot():
 
 
 settings() # read conf file
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(se['token'])
 state_sender = 0
 count_command = 0
-clients = [admin_id] # make clients list
+clients = [ se['admin_id'] ] # make clients list
 
 
 
@@ -456,11 +456,11 @@ def foto_bot(message):
 				bot.send_message(message.chat.id, "Photo from device %s: "%line )
 				os.system("rm %s" % (live_path) )
 				time.sleep(0.5)
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, live_resolution, live_path) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
 				time.sleep(1)
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, live_resolution, live_path) )
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, live_resolution, live_path) )
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, live_resolution, live_path) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
 				bot.send_photo(message.chat.id,  open( live_path , 'rb') )
 		if state:
 			os.system("motion")
@@ -509,7 +509,7 @@ def start_bot(message=False):
 	except Exception, e:
 		log(e)
 
-@bot.message_handler(regexp='^(?i)add' + password)
+@bot.message_handler(regexp='^(?i)add' + se['password'])
 def add_bot(message):
 	try:
 		global clients
@@ -547,8 +547,8 @@ def sender():
 			if state == False:
 				time.sleep(3)
 				continue	
-			os.system("rm %s*.avi"% motion_dir)
-			files = os.listdir(motion_dir) 
+			os.system("rm %s*.avi"% se['motion_dir'])
+			files = os.listdir(se['motion_dir']) 
 			if len(files) == 0:
 				time.sleep(1)
 				continue
@@ -556,8 +556,8 @@ def sender():
 			log("Sending foto:" + str(files[0]) )
 			for foto in files:
 				for line in clients:
-					bot.send_photo(line ,  open(motion_dir + foto , 'rb') )  
-				os.system("rm " + motion_dir + foto ) 
+					bot.send_photo(line ,  open(se['motion_dir'] + foto , 'rb') )  
+				os.system("rm " + se['motion_dir'] + foto ) 
 		except Exception,e :
 			log(e)
 			time.sleep(5)
