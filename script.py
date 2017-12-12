@@ -45,46 +45,46 @@ def log( string, admin_note = False ):
 
 
 
-settings = {}
+se = {}
 def settings_new():
 	try:
-		global settings
+		global se
 		config = ConfigParser.ConfigParser()
 		config.read(conf_file)
 
-		settings['admin_id'] = config.getint('main','admin_id')
-		settings['token'] = config.get('main','token')
-		settings['password'] = config.get('main','password')
-		settings['motion_dir'] = config.get('main','motion_dir')
-		settings['home_dir'] = config.get('main','home_dir')
-		settings['live_resolution'] = config.get('main','live_resolution')
+		se['admin_id'] = config.getint('main','admin_id')
+		se['token'] = config.get('main','token')
+		se['password'] = config.get('main','password')
+		se['motion_dir'] = config.get('main','motion_dir')
+		se['home_dir'] = config.get('main','home_dir')
+		se['live_resolution'] = config.get('main','live_resolution')
 		
-		settings['router_ip'] = config.get('router','router_ip')
-		settings['router_user'] = config.get('router','router_user')
-		settings['router_pass'] = config.get('router','router_pass')
-		settings['make_reboot'] = config.getboolean('router','make_reboot')
+		se['router_ip'] = config.get('router','router_ip')
+		se['router_user'] = config.get('router','router_user')
+		se['router_pass'] = config.get('router','router_pass')
+		se['make_reboot'] = config.getboolean('router','make_reboot')
 
-		settings['wifi'] = config.getboolean('wifi','wifi')
-		settings['ssid_wifi'] = config.get('wifi','ssid_1')
-		settings['password_wifi'] = config.get('wifi','pass_1')
+		se['wifi'] = config.getboolean('wifi','wifi')
+		se['ssid_wifi'] = config.get('wifi','ssid_1')
+		se['password_wifi'] = config.get('wifi','pass_1')
 
-		settings['state'] = config.getboolean('current','state')
-		settings['log_path'] =  home_dir + "/log.txt"
-		settings['live_path'] = home_dir + "/live.jpg"
-		settings['audio_path'] = home_dir + "/output.wav"
-		settings['script_path'] = home_dir + "/script.py"
-		settings['config_path'] = home_dir + "/main.conf"
-		settings['allow_add_user'] = config.getboolean('main','allow_add_user')
-
-		try:
-			settings['start_time'] = config.get('main','start_time')
-		except Exception, e:
-			settings['start_time'] = False
+		se['state'] = config.getboolean('current','state')
+		se['log_path'] =  home_dir + "/log.txt"
+		se['live_path'] = home_dir + "/live.jpg"
+		se['audio_path'] = home_dir + "/output.wav"
+		se['script_path'] = home_dir + "/script.py"
+		se['config_path'] = home_dir + "/main.conf"
+		se['allow_add_user'] = config.getboolean('main','allow_add_user')
 
 		try:
-			settings['stop_time'] = config.get('main','stop_time')
+			se['start_time'] = config.get('main','start_time')
 		except Exception, e:
-			settings['stop_time'] = False
+			se['start_time'] = False
+
+		try:
+			se['stop_time'] = config.get('main','stop_time')
+		except Exception, e:
+			se['stop_time'] = False
 		return str(settings)
 
 	except Exception, e:
@@ -145,6 +145,8 @@ def settings():
 
 def update_settings(section, atribute, value ):
   try:
+    global se
+    se[atribute] = value
     config = ConfigParser.ConfigParser()
     config.read(conf_file)
     config.set(section, atribute, value )
@@ -290,7 +292,7 @@ def update(message):
 		scriptF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/script.py").read()
 		motionF  = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/motion.conf").read()
 		infoF = urllib.urlopen("https://raw.githubusercontent.com/denchz/video-bot/master/info_version").read()
-		bot.send_message(message.chat.id,  "Current version: 1.12")
+		bot.send_message(message.chat.id,  "Current version: 1.13")
 		
 		#sednd info about changes
 		bot.send_message(message.chat.id,  infoF)
@@ -381,6 +383,9 @@ def state_bot(message):
 		string = string + "\nStart time: " + str( start_time)
 		string = string + "\nStop time: " + str( stop_time)
 		bot.send_message(message.chat.id,  string )
+		
+		settings_new():
+		bot.send_message(message.chat.id,  str(se) )
 	except Exception, e:
 		log(e)
 
