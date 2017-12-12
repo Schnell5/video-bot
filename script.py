@@ -249,8 +249,8 @@ def help_bot(message):
 	if not check_request(message.chat.id, "Asking for help message" ): return False
 	try:
 		string = "  Commnads\n"
-		string = string + "    /start -- Start motion detection\n"
-		string = string + "     /stop -- Stop motion detection\n"
+		string = string + "    /camera_on -- Start motion detection\n"
+		string = string + "     /camera_off -- Stop motion detection\n"
 		string = string + "     /photo -- Make foto at that moment\n"
 		string = string + "     /help -- Get info\n"
 		string = string + "  /restart -- Restart bot\n"
@@ -262,15 +262,6 @@ def help_bot(message):
 	except Exception, e:
 		bot.send_message(message.chat.id, (e) )
 
-
-
-@bot.message_handler(commands=['motion_conf'])
-def motion_conf_bot(message):
-	if not check_request(message.chat.id, "Asking for motion.conf file" ): return False
-	try:
-		bot.send_document(message.chat.id,  open( motion_conf_file , 'rb') )
-	except Exception, e:
-		log(e)
 
 
 @bot.message_handler(commands=['script'])
@@ -380,10 +371,7 @@ def state_bot(message):
 			string = string + "\n Camera: FAIL"
 		else: 
 			string = string + string_camera
-				
-				
-				
-
+	
 		#Checking sender
 		state_motion = state_sender 
 		time.sleep(3)
@@ -396,27 +384,6 @@ def state_bot(message):
 		string = string + "\nStart time: " + str( start_time)
 		string = string + "\nStop time: " + str( stop_time)
 		bot.send_message(message.chat.id,  string )
-	except Exception, e:
-		log(e)
-
-@bot.message_handler(regexp='^(?i)time')
-def time_bot(message):
-	if not check_request(message.chat.id, "Setting start time " ): return False
-	try:
-		text = message.text.replace(" ","")
-		
-		hour = re.findall(r"\D*(\d*)\D*\d*", text)[0] 
-		minute = re.findall(r"\D*\d*\D*(\d*)", text)[0] 
-
-		try:
-			dt = datetime.strptime("%s:%s"%(hour, minute), "%H:%M")
-		except Exception, e:
-			bot.send_message(message.chat.id,  "Error in time format" )
-			return True
-		time =  str( dt.strftime("%H:%M") )
-		os.system("date +%%T -s \"%s\""%time)
-
-		bot.send_message(message.chat.id,  "\n Now time is " + str( datetime.now().strftime("%H.%M") ) )
 	except Exception, e:
 		log(e)
 
@@ -530,7 +497,6 @@ def stop_bot(message=False):
 @bot.message_handler(commands=['camera_on'])
 def start_bot(message=False):
 	if not check_request(message.chat.id, "Asking for start motion" ):  return False
-	
 	try:
 		global state
 		os.system("rm /var/lib/motion/*")
@@ -627,12 +593,5 @@ thread3 = threading.Thread(target=time_stop_start)
 thread3.start()
 
 time.sleep(2)
-log("Bot started" , admin_note = True  )
-
-if state:
-	try:
-		os.system("rm /var/lib/motion/*")
-		os.system("motion")
-		bot.send_message(admin_id, "Camera started " )
-	except Exception,e :
-		log(e)
+log("Bot started" , admin_note = True)
+if state: start_bot()
