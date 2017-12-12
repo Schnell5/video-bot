@@ -46,7 +46,7 @@ def log( string, admin_note = False ):
 
 
 se = {}
-def settings_new():
+def settings():
 	try:
 		global se
 		config = ConfigParser.ConfigParser()
@@ -91,65 +91,16 @@ def settings_new():
 		log(e)
 
 
-def settings():
-	try:
-		global admin_id, token, password, motion_dir, home_dir, router_ip, router_user, router_pass, make_reboot, state, clients, live_resolution, wifi, ssid_wifi, password_wifi
-		global log_path, live_path, audio_path, script_path, config_path, allow_add_user , start_time, stop_time
-		config = ConfigParser.ConfigParser()
-		config.read(conf_file)
-
-		admin_id = config.getint('main','admin_id')
-		token = config.get('main','token')
-		password = config.get('main','password')
-		motion_dir = config.get('main','motion_dir')
-		home_dir = config.get('main','home_dir')
-		live_resolution = config.get('main','live_resolution')
-		
-
-		
-		router_ip = config.get('router','router_ip')
-		router_user = config.get('router','router_user')
-		router_pass = config.get('router','router_pass')
-		make_reboot = config.getboolean('router','make_reboot')
-
-		wifi = config.getboolean('wifi','wifi')
-		ssid_wifi = config.get('wifi','ssid_1')
-		password_wifi = config.get('wifi','pass_1')
-
-		state = config.getboolean('current','state')
-		
-		log_path =  home_dir + "/log.txt"
-		live_path = home_dir + "/live.jpg"
-		audio_path = home_dir + "/output.wav"
-		script_path = home_dir + "/script.py"
-		config_path = home_dir + "/main.conf"
-		allow_add_user = config.getboolean('main','allow_add_user')
-
-		try:
-			start_time = config.get('main','start_time')
-		except Exception, e:
-			start_time = False
-
-		try:
-			stop_time = config.get('main','stop_time')
-		except Exception, e:
-			stop_time = False
-
-		
-		log("Settings was read")
-	except Exception, e:
-		log(e)
-
 	
 
 
-def update_settings(section, atribute, value ):
+def update_settings(section, attribute, value ):
   try:
     global se
-    se[atribute] = value
+    se[attribute] = value
     config = ConfigParser.ConfigParser()
     config.read(conf_file)
-    config.set(section, atribute, value )
+    config.set(section, attribute, value )
     with open(conf_file, 'w') as configfile:
           config.write(configfile)
     log("Settings was updated")
