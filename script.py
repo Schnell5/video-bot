@@ -173,7 +173,7 @@ def reboot():
 
 
 
-settings_new() # read conf file
+settings() # read conf file
 bot = telebot.TeleBot(se['token'])
 state_sender = 0
 count_command = 0
@@ -335,7 +335,7 @@ def state_bot(message):
 		string = string + "\nStop time: " + str( se['stop_time'])
 		bot.send_message(message.chat.id,  string )
 		
-		settings_new():
+		settings_new()
 		bot.send_message(message.chat.id,  str(se) )
 	except Exception, e:
 		log(e)
@@ -344,7 +344,7 @@ def state_bot(message):
 def start_time_bot(message):
 	if not check_request(message.chat.id, "Setting start time " ): return False
 	try:
-		global se['start_time']
+		global se
 		text = message.text.replace(" ","")
 		
 		if text == "start0":
@@ -369,7 +369,7 @@ def start_time_bot(message):
 def stop_time_bot(message):
 	if not check_request(message.chat.id, "Setting start time " ): return False
 	try:
-		global se['stop_time']
+		global se
 		text = message.text.replace(" ","")
 
 		if text == "stop0":
@@ -396,7 +396,7 @@ def foto_bot(message):
 	if not check_request(message.chat.id, "Asking for live foto" ): return False
 
 	try:
-		global se['state']
+		global se
 		if se['state']:
 			os.system("killall motion")
 			bot.send_message(message.chat.id, "Camera stopped" )
@@ -439,7 +439,7 @@ def audio_bot(message):
 def stop_bot(message=False):
 	if not check_request(message.chat.id, "Asking for stop motion " ): return False
 	try:
-		global se['state']
+		global se
 		os.system("killall motion")
 		if message: bot.send_message(message.chat.id, "Camera stopped" )
 		se['state'] = False
@@ -451,7 +451,7 @@ def stop_bot(message=False):
 def start_bot(message=False):
 	if not check_request(message.chat.id, "Asking for start motion" ):  return False
 	try:
-		global se['state']
+		global se
 		os.system("rm /var/lib/motion/*")
 		os.system("motion")
 		if message: bot.send_message(message.chat.id, "Camera started" )
@@ -463,7 +463,7 @@ def start_bot(message=False):
 @bot.message_handler(regexp='^(?i)add' + se['password'])
 def add_bot(message):
 	try:
-		global clients
+		global se
 		#if not allow_add_user:
 		#	bot.send_message(message.chat.id, "Adding is denied")
 		#	return False
@@ -489,7 +489,7 @@ def delete_bot(message):
 
 
 def sender():
-	global se['state']
+	global se
 	global state_sender
 	global clients
 	while True:	
