@@ -173,7 +173,7 @@ def reboot():
 
 
 
-settings() # read conf file
+settings_new() # read conf file
 bot = telebot.TeleBot(se['token'])
 state_sender = 0
 count_command = 0
@@ -221,7 +221,7 @@ def help_bot(message):
 def script_bot(message):
 	if not check_request(message.chat.id, "Asking for script file" ): return False
 	try:
-		bot.send_document(message.chat.id,  open( script_path , 'rb') )
+		bot.send_document(message.chat.id,  open( se['script_path'] , 'rb') )
 	except Exception, e:
 		log(e)
 
@@ -229,7 +229,7 @@ def script_bot(message):
 def log_bot(message):
 	if not check_request(message.chat.id, "Asking for log file" ): return False
 	try:
-		bot.send_document(message.chat.id,  open( log_path , 'rb') )
+		bot.send_document(message.chat.id,  open( se['log_path'] , 'rb') )
 	except Exception, e:
 		log(e)
 
@@ -255,8 +255,8 @@ def update(message):
 		f.close()
 		
 		#update script file
-		os.system("rm %s"%script_path )
-		f = open("%s" % script_path, "w")
+		os.system("rm %s"%se['script_path'] )
+		f = open("%s" % se['script_path'], "w")
 		f.write(scriptF)
 		f.close()
 		
@@ -274,7 +274,7 @@ def update(message):
 def log_clear(message):
 	if not check_request(message.chat.id, "Asking for clearing log" ): return False
 	try:
-		os.system("rm " + log_path )
+		os.system("rm " + se['log_path'] )
 		time.sleep(2)
 		bot.send_message(message.chat.id, "Log file cleared" )
 	except Exception, e:
@@ -305,7 +305,7 @@ def state_bot(message):
 	try:
 		bot.send_message(message.chat.id,  "Checking..." )
 		string = "Clients: " + str(clients)
-		if state:
+		if se['state']:
 			string = string + "\nDetection status: ON"
 		else: 
 			string = string + "\nDetection status: OFF"
@@ -331,8 +331,8 @@ def state_bot(message):
 			string = string + "\nState of motion detection: FAIL"
 
 		string = string + "\n\nCurrent time: " + str( datetime.now().replace(microsecond=0) )
-		string = string + "\nStart time: " + str( start_time)
-		string = string + "\nStop time: " + str( stop_time)
+		string = string + "\nStart time: " + str( se['start_time'])
+		string = string + "\nStop time: " + str( se['stop_time'])
 		bot.send_message(message.chat.id,  string )
 		
 		settings_new():
@@ -344,11 +344,11 @@ def state_bot(message):
 def start_time_bot(message):
 	if not check_request(message.chat.id, "Setting start time " ): return False
 	try:
-		global start_time
+		global se['start_time']
 		text = message.text.replace(" ","")
 		
 		if text == "start0":
-			start_time = False
+			se['start_time'] = False
 			update_settings('main', 'start_time', False )
 			bot.send_message(message.chat.id,  "Start Time canceled")
 			return True
@@ -360,7 +360,7 @@ def start_time_bot(message):
 			bot.send_message(message.chat.id,  "Error in time format" )
 			return True
 		update_settings('main', 'start_time', str( dt.strftime("%H.%M") ) )
-		start_time = str( dt.strftime("%H.%M") )
+		se['start_time'] = str( dt.strftime("%H.%M") )
 		bot.send_message(message.chat.id,  "Start time is: " + str( dt.strftime("%H.%M") )  + "\n Now is " + str( datetime.now().strftime("%H.%M") ) )
 	except Exception, e:
 		log(e)
@@ -369,11 +369,11 @@ def start_time_bot(message):
 def stop_time_bot(message):
 	if not check_request(message.chat.id, "Setting start time " ): return False
 	try:
-		global stop_time
+		global se['stop_time']
 		text = message.text.replace(" ","")
 
 		if text == "stop0":
-			stop_time = False
+			se['stop_time'] = False
 			update_settings('main', 'stop_time', False )
 			bot.send_message(message.chat.id,  "Stop Time canceled")
 			return True
@@ -386,7 +386,7 @@ def stop_time_bot(message):
 			return True
 
 		update_settings('main', 'stop_time', str( dt.strftime("%H.%M") ))
-		stop_time = str( dt.strftime("%H.%M") )
+		se['stop_time'] = str( dt.strftime("%H.%M") )
 		bot.send_message(message.chat.id,  "Stop time is: " + str( dt.strftime("%H.%M") )  + "\n Now is " + str( datetime.now().strftime("%H.%M") ) )
 	except Exception, e:
 		log(e)
@@ -396,8 +396,8 @@ def foto_bot(message):
 	if not check_request(message.chat.id, "Asking for live foto" ): return False
 
 	try:
-		global state
-		if state:
+		global se['state']
+		if se['state']:
 			os.system("killall motion")
 			bot.send_message(message.chat.id, "Camera stopped" )
 		#First camera photo
@@ -405,15 +405,15 @@ def foto_bot(message):
 		for line in files:
 			if "video" in line:
 				bot.send_message(message.chat.id, "Photo from device %s: "%line )
-				os.system("rm %s" % (live_path) )
+				os.system("rm %s" % (se['live_path']) )
 				time.sleep(0.5)
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], se['live_path']) )
 				time.sleep(1)
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
-				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], live_path) )
-				bot.send_photo(message.chat.id,  open( live_path , 'rb') )
-		if state:
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], se['live_path']) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], se['live_path']) )
+				os.system("fswebcam -d /dev/%s -r %s %s" % (line, se['live_resolution'], se['live_path']) )
+				bot.send_photo(message.chat.id,  open( se['live_path'] , 'rb') )
+		if se['state']:
 			os.system("motion")
 			bot.send_message(message.chat.id, "Camera started" )
 	except Exception, e:
@@ -429,9 +429,9 @@ def audio_bot(message):
 			return False
 		time_audio = message.text.replace("Audio","").replace("audio","")
 		bot.send_message(message.chat.id, "Audio " + time_audio + " seconds is recording. Wait" )
-		os.system("arecord -d %s -f S16_LE -D hw:1,0 -r 48000 %s" % (time_audio, audio_path) )
+		os.system("arecord -d %s -f S16_LE -D hw:1,0 -r 48000 %s" % (time_audio, se['audio_path']) )
 		time.sleep( int(time_audio ) + 2 )
-		bot.send_document(message.chat.id,  open( audio_path , 'rb') )
+		bot.send_document(message.chat.id,  open( se['audio_path'] , 'rb') )
 	except Exception, e:
 		log(e)
 
@@ -439,11 +439,11 @@ def audio_bot(message):
 def stop_bot(message=False):
 	if not check_request(message.chat.id, "Asking for stop motion " ): return False
 	try:
-		global state
+		global se['state']
 		os.system("killall motion")
 		if message: bot.send_message(message.chat.id, "Camera stopped" )
-		state = False
-		update_settings('current', 'state', state)
+		se['state'] = False
+		update_settings('current', 'state', se['state'])
 	except Exception, e:
 		log(e)
 
@@ -451,12 +451,12 @@ def stop_bot(message=False):
 def start_bot(message=False):
 	if not check_request(message.chat.id, "Asking for start motion" ):  return False
 	try:
-		global state
+		global se['state']
 		os.system("rm /var/lib/motion/*")
 		os.system("motion")
 		if message: bot.send_message(message.chat.id, "Camera started" )
-		state = True
-		update_settings('current', 'state', state)
+		se['state'] = True
+		update_settings('current', 'state', se['state'])
 	except Exception, e:
 		log(e)
 
@@ -489,13 +489,13 @@ def delete_bot(message):
 
 
 def sender():
-	global state
+	global se['state']
 	global state_sender
 	global clients
 	while True:	
 		try:
 			state_sender = ( state_sender  + 1 ) % 100000
-			if state == False:
+			if se['state'] == False:
 				time.sleep(3)
 				continue	
 			os.system("rm %s*.avi"% se['motion_dir'])
@@ -525,10 +525,10 @@ def time_stop_start():
 	while True:
 		try:
 			time.sleep(30)
-			if str(start_time) == str( datetime.now().strftime("%H.%M") )  and state == False:
+			if str(se['start_time']) == str( datetime.now().strftime("%H.%M") )  and se['state'] == False:
 				start_bot()
 				log("Motion started by timer" , admin_note = True  )
-			if str(stop_time) == str( datetime.now().strftime("%H.%M") ) and state == True :
+			if str(se['stop_time']) == str( datetime.now().strftime("%H.%M") ) and se['state'] == True :
 				stop_bot()
 				log("Motion stoped by timer" , admin_note = True  )
 		except Exception,e :
@@ -547,4 +547,4 @@ thread3.start()
 
 time.sleep(2)
 log("Bot started" , admin_note = True)
-if state: start_bot()
+if se['state']: start_bot()
