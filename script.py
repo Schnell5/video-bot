@@ -38,7 +38,7 @@ def log( string, admin_note = False ):
        log_file = open( se['log_path'] ,"a")
        log_file.write( str(datetime.now().replace(microsecond=0) ) + "        " + str(string) + "\n\n" )
        log_file.close() 
-       if admin_note: bot.send_message(admin_id ,  str(string) )
+       if admin_note: bot.send_message(se['admin_id'] ,  str(string) )
     except Exception, e:
        pass
 
