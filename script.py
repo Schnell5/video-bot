@@ -35,8 +35,7 @@ motion_conf_file = "/etc/motion/motion.conf"
 
 def log( string, admin_note = False ):
     try:
-       global last_log
-       log_file = open( log_path ,"a")
+       log_file = open( se['log_path'] ,"a")
        log_file.write( str(datetime.now().replace(microsecond=0) ) + "        " + str(string) + "\n\n" )
        log_file.close() 
        if admin_note: bot.send_message(admin_id ,  str(string) )
