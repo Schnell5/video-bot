@@ -42,7 +42,7 @@ def log( string, admin_note = False ):
     except Exception, e:
        pass
 
-
+DENIS
 
 se = {}
 def settings():
